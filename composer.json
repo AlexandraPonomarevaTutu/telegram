@@ -1,0 +1,12 @@
+{
+  "require": {
+    "php": ">=7.2",
+    "longman/telegram-bot": "*",
+    "vlucas/phpdotenv": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "App/"
+    }
+  }
+}
