@@ -28,8 +28,8 @@ class EqualCommand extends UserCommand
 
         $data = [                                  // Set up the new message data
             'chat_id' => $chat_id,                 // Set Chat ID to send the message to
-            'text'    => "Эй, $user! " . 'Не знаю сколько тут вас, но я поделил сумму ' . $sum . ' на троих, получилось '
-                . $sum/3 . '/n' . "исходное сообщение: $text" // Set message to send
+            'text'    => "Эй, {$user}! Не знаю сколько тут вас, но я поделил сумму {$sum} на троих, получилось "
+                . $sum/3 . "\n исходное сообщение: $text" // Set message to send
         ];
 
         return Request::sendMessage($data);        // Send message!
