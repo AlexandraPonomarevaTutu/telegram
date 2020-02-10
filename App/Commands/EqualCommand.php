@@ -22,14 +22,16 @@ class EqualCommand extends UserCommand
 
         $text = $message->getText(true);
 
+        $count = Request::getChatMembersCount(['chat_id' => $chat_id]);
+
         $arr = preg_match_all('/\d+/', $text, $matches);
 
         $sum = $matches[0][0];
 
         $data = [                                  // Set up the new message data
             'chat_id' => $chat_id,                 // Set Chat ID to send the message to
-            'text'    => "Эй, {$user}! Не знаю сколько тут вас, но я поделил сумму {$sum} на троих, получилось "
-                . $sum/3 . "\n исходное сообщение: $text" // Set message to send
+            'text'    => "Эй, {$user}! Вас тут {$count}, я поделил сумму {$sum} на всех, получилось "
+                . $sum/$count . "\n исходное сообщение: $text" // Set message to send
         ];
 
         return Request::sendMessage($data);        // Send message!
