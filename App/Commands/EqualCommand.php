@@ -22,7 +22,7 @@ class EqualCommand extends UserCommand
 
         $text = $message->getText(true);
 
-        $count = Request::getChatMembersCount(['chat_id' => $chat_id]);
+        $count = Request::getChatMembersCount(['chat_id' => $chat_id])->getResult();
 
         $arr = preg_match_all('/\d+/', $text, $matches);
 
