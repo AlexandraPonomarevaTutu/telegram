@@ -16,7 +16,7 @@ $dotenv->load();
 
 // Add you bot's API key and name
 $bot_api_key  = getenv('TELEGRAM_BOT_TOKEN');
-$bot_username = \App\helpers\Names::BOT;
+$bot_username = getenv('BOT_NAME');
 
 try {
     // Create Telegram API object

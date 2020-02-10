@@ -3,7 +3,7 @@ require_once('../vendor/autoload.php');
 use App\helpers\Names;
 
 $bot_api_key  = getenv('TELEGRAM_BOT_TOKEN');
-$bot_username = Names::SASHA_TEST_BOT;
+$bot_username = getenv('BOT_NAME');
 
 $commands_paths = [
     __DIR__ . '/Commands',
