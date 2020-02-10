@@ -22,7 +22,8 @@ class EqualCommand extends UserCommand
 
         $text = $message->getText(true);
 
-        $count = Request::getChatMembersCount(['chat_id' => $chat_id])->getResult();
+        // бот тоже считается участником чата, поэтому его вычитаем
+        $count = Request::getChatMembersCount(['chat_id' => $chat_id])->getResult() - 1;
 
         $arr = preg_match_all('/\d+/', $text, $matches);
 
