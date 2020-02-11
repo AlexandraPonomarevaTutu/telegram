@@ -4,8 +4,8 @@ require_once('../vendor/autoload.php');
 use App\helpers\Names;
 
 $bot_api_key  = getenv('TELEGRAM_BOT_TOKEN');
-$bot_username = Names::BOT;
-$hook_url     = 'https://radiant-bastion-17962.herokuapp.com/hook.php';
+$bot_username = getenv('BOT_NAME');
+$hook_url     = getenv('DOMAIN') . '/hook.php';
 
 try {
     // Create Telegram API object
