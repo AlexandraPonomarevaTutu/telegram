@@ -18,3 +18,10 @@ try {
 } catch (PDOException $e) {
     echo $e->getMessage();
 }
+
+
+$sql_get_depts = "SELECT * FROM debts";
+
+$stmt = $conn->query($sql_get_depts);
+
+echo PHP_EOL . var_export($stmt);
