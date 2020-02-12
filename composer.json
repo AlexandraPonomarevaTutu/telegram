@@ -2,7 +2,8 @@
   "require": {
     "php": ">=7.2",
     "longman/telegram-bot": "*",
-    "vlucas/phpdotenv": "*"
+    "vlucas/phpdotenv": "*",
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {
