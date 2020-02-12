@@ -25,6 +25,7 @@ $sql_get_depts = "SELECT * FROM debts";
 $stmt = $conn->query($sql_get_depts);
 
 echo PHP_EOL . var_export($stmt);
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-echo PHP_EOL . var_export($row);
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    echo htmlspecialchars($row['username']) . PHP_EOL;
+};
