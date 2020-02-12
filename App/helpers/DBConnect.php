@@ -23,7 +23,7 @@ class DBConnect
     {
         $sql = 'INSERT INTO debts (username, debt_to, credit) VALUES (:username, :debtto, :credit)';
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute(['username' => $username, 'debt_to' => $debtto, 'credit' => $credit]);
+        $stmt->execute(['username' => $username, 'debtto' => $debtto, 'credit' => $credit]);
     }
 
 }
