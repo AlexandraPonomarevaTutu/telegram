@@ -23,15 +23,7 @@ class DebtCommand extends UserCommand
 
         $text = $message->getText(true);
 
-        $entities = $message->getEntities();
-
-        foreach ($entities as $entity) {
-           if ($entity->getType() === 'mention') {
-               $offset = $entity->getOffset();
-               $length = $entity->getLength();
-               $user2 = substr($text, $offset, $length);
-           }
-        }
+        $user2 = $this->getUserMention($message, $text);
 
         preg_match_all('/\d+/', $text, $matches);
 
@@ -46,5 +38,24 @@ class DebtCommand extends UserCommand
         (new DBConnect())->addDebt($user, $user2, $sum);
 
         return Request::sendMessage($data);        // Send message!
+    }
+
+    /**
+     * @param $message \Longman\TelegramBot\Entities\Message
+     * @param $text
+     * @return bool|string
+     */
+    private function getUserMention($message, $text)
+    {
+        $entities = $message->getEntities();
+
+        foreach ($entities as $entity) {
+            if ($entity->getType() === 'mention') {
+                $offset = $entity->getOffset();
+                $length = $entity->getLength();
+                $user2 = substr($text, $offset + 1, $length + 1);
+            }
+        }
+        return $user2;
     }
 }
