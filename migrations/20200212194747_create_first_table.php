@@ -16,6 +16,6 @@ class CreateFirstTable extends AbstractMigration
 
     public function down()
     {
-        $this->table('debt')->drop()->save();
+        $this->table('session')->drop()->save();
     }
 }
