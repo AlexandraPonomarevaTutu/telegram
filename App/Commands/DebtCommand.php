@@ -73,6 +73,6 @@ class DebtCommand extends UserCommand
      */
     private function validateMessage($message)
     {
-        return preg_match('\/debt @.+\s+\d+\s+.+', $message->getText());
+        return preg_match('/\/debt @.+\s+\d+\s+.+/', $message->getText());
     }
 }
