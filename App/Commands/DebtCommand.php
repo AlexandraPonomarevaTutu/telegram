@@ -13,49 +13,66 @@ class DebtCommand extends UserCommand
     protected $usage = '/debt';                    // Usage of your command
     protected $version = '1.0.0';                  // Version of your command
 
+    private $user;
+    private $sum;
+    private $debtDescription;
+    private $user2;
+
     public function execute()
     {
         $message = $this->getMessage();            // Get Message object
-
         $chat_id = $message->getChat()->getId();   // Get the current Chat ID
 
-        $user = $message->getFrom()->getUsername();
 
-        $text = $message->getText(true);
+        if (!$this->validateMessage($message))
+        {
+            $reply = "Команда должна быть формата /debt @user СУММА описание";
+        } else {
+            $this->prepareData($message);
 
-        $user2 = $this->getUserMention($message, $text);
+            $reply = "{$this->user}! Задолжал {$this->user2} {$this->sum} рублей, за {$this->debtDescription}";
 
-        preg_match_all('/\d+/', $text, $matches);
-
-        $sum = $matches[0][0];
+            (new DBConnect())->addDebt($this->user, $this->user2, $this->sum);
+        }
 
         $data = [                                  // Set up the new message data
             'chat_id' => $chat_id,                 // Set Chat ID to send the message to
-            'text'    => "Эй, {$user}! За тобой должок на {$sum}, а должен ты {$user2} "
-                . "\n исходное сообщение: $text" // Set message to send
+            'text'    => $reply
         ];
-
-        (new DBConnect())->addDebt($user, $user2, $sum);
 
         return Request::sendMessage($data);        // Send message!
     }
 
     /**
      * @param $message \Longman\TelegramBot\Entities\Message
-     * @param $text
-     * @return bool|string
      */
-    private function getUserMention($message, $text)
+    private function prepareData($message)
     {
         $entities = $message->getEntities();
+        $text = $message->getText(false);
 
         foreach ($entities as $entity) {
             if ($entity->getType() === 'mention') {
                 $offset = $entity->getOffset();
                 $length = $entity->getLength();
-                $user2 = substr($text, $offset + 1, $length + 1);
+                $user2 = substr($text, $offset, $length);
             }
         }
-        return $user2;
+
+        $this->user = $message->getFrom()->getUsername();
+        $this->debtTo = $user2;
+        //TODO:добавить проверку, что юзер есть в чате
+
+        $this->debtDescription = substr($text, $offset + $length);
+        preg_match_all('/\d+/', $text, $matches);
+        $this->sum = $sum = $matches[0][0];
+    }
+
+    /**
+     * @param $message \Longman\TelegramBot\Entities\Message
+     */
+    private function validateMessage($message)
+    {
+        return preg_match('\/debt @.+\s+\d+\s+.+', $message->getText());
     }
 }
