@@ -7,11 +7,11 @@ class CreateFirstTable extends AbstractMigration
 {
     public function up()
     {
-    	$debtTable = $this->table('session');
-        $debtTable->addColumn('is_active', 'boolean', ['default' => 1])
+    	$sessionTable = $this->table('session');
+        $sessionTable->addColumn('is_active', 'boolean', ['default' => 1])
             ->addColumn('chat_id', 'string')
             ->addIndex(['chat_id']);
-        $debtTable->save();
+        $sessionTable->save();
     }
 
     public function down()
