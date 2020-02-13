@@ -3,7 +3,9 @@
     "php": ">=7.2",
     "longman/telegram-bot": "*",
     "vlucas/phpdotenv": "*",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "robmorgan/phinx": "^0.11.4",
+    "nyholm/dsn": "^1.0"
   },
   "autoload": {
     "psr-4": {
