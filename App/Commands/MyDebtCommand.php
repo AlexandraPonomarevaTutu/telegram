@@ -23,7 +23,7 @@ class MyDebtCommand extends UserCommand
         $user = $message->getFrom()->getUsername();
 
         $debtText = "Эй, {$user}! \n";
-        $sessionId = (new SessionTable())->getSessionByChatId($chatId);
+        $sessionId = (new SessionTable())->getLastActiveSessionByChatId($chatId);
         $debtsData = (new DebtTable())->getActiveDebtsForUser($user, $sessionId);
 
         foreach ($debtsData as $debt)
