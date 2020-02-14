@@ -33,11 +33,23 @@ class DebtTable extends AbstractTable
 //            . ' WHERE p.session_id = ? AND d.is_open = true';
 
         // пока debt.payment_id = $sessionId, а табличка payment не используется, достаточно простого запроса
-        $request = 'SELECT d.user_debtor, d.user_creditor, d.amount FROM ' . self::DEBT_TABLE . ' d
+        $request = 'SELECT d.user_debtor, d.user_creditor, d.amount, d.description FROM ' . self::DEBT_TABLE . ' d
          WHERE d.payment_id = ? AND d.is_open = true';
 
         $statement = $this->pdo->prepare($request);
         $statement->execute([$sessionId]);
+        return $queryResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getActiveDebtsForUser(string $debtor, int $sessionId)
+    {
+        // TODO это временное решение, пока нет payment и захардкожено payment_id = $sessionId
+        $request = 'SELECT d.user_creditor, d.amount, d.description FROM ' . self::DEBT_TABLE . ' d
+         WHERE d.user_debtor = ? AND d.is_open = true AND d.payment_id = ? 
+         ORDER BY d.user_creditor';
+
+        $statement = $this->pdo->prepare($request);
+        $statement->execute([$debtor, $sessionId]);
         return $queryResult = $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
