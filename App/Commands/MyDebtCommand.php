@@ -9,7 +9,7 @@ use Longman\TelegramBot\Request;
 
 class MyDebtCommand extends UserCommand
 {
-    protected $name = 'debt';                                 // Your command's name
+    protected $name = 'my_debt';                                 // Your command's name
     protected $description = 'get all debts for asking user'; // Your command description
     protected $usage = '/my_debt';                               // Usage of your command
     protected $version = '1.0.0';                             // Version of your command
@@ -23,11 +23,13 @@ class MyDebtCommand extends UserCommand
         $user = $message->getFrom()->getUsername();
 
         $debtText = "Эй, {$user}! \n";
-        $sessionId = (new SessionTable())->getLastActiveSessionByChatId($chatId);
-        $debtsData = (new DebtTable())->getActiveDebtsForUser($user, $sessionId);
+        try {
+            $sessionId = (new SessionTable())->getLastActiveSessionByChatId($chatId);
+        } catch (\Throwable $e) {
+            $sessionId = 1; // TODO как надо обработать ошибку?
+        }        $debtsData = (new DebtTable())->getActiveDebtsForUser($user, $sessionId);
 
-        foreach ($debtsData as $debt)
-        {
+        foreach ($debtsData as $debt) {
             $debtText .= "Ты должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
         }
 
