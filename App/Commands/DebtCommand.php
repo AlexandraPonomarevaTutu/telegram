@@ -2,7 +2,8 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
-use App\Commands\DBConnect;
+use App\Model\DebtTable;
+use App\Model\SessionTable;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Request;
 
@@ -24,15 +25,20 @@ class DebtCommand extends UserCommand
         $chat_id = $message->getChat()->getId();   // Get the current Chat ID
 
 
-        if (!$this->validateMessage($message))
-        {
+        if (!$this->validateMessage($message)) {
             $reply = "Команда должна быть формата /debt @user СУММА описание";
         } else {
             $this->prepareData($message);
 
+            try {
+                $sessionId = (new SessionTable())->getLastActiveSessionByChatId($chat_id);
+            } catch (\Throwable $e) {
+                $sessionId = 1; // TODO как надо обработать ошибку?
+            }
             $reply = "{$this->user}! Задолжал {$this->user2} {$this->sum} рублей, за {$this->debtDescription}";
 
-            (new DBConnect())->addDebt($this->user, $this->user2, $this->sum);
+            // TODO получать/создавать payment и передавать payment_id вместо сессии
+            (new DebtTable())->addDebt($this->user, $this->user2, $this->sum, $sessionId, $this->debtDescription);
         }
 
         $data = [                                  // Set up the new message data
@@ -60,7 +66,7 @@ class DebtCommand extends UserCommand
         }
 
         $this->user = $message->getFrom()->getUsername();
-        $this->debtTo = $user2;
+        $this->user2 = $user2;
         //TODO:добавить проверку, что юзер есть в чате
 
         $this->debtDescription = substr($text, $offset + $length);
@@ -70,6 +76,8 @@ class DebtCommand extends UserCommand
 
     /**
      * @param $message \Longman\TelegramBot\Entities\Message
+     *
+     * @return false|int
      */
     private function validateMessage($message)
     {
