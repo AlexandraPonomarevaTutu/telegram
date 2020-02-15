@@ -9,8 +9,13 @@ class DebtTable extends AbstractTable
 {
     public const DEBT_TABLE = 'debt';
 
-    public function addDebt(string $userDebtor, string $userCreditor, float $amount, int $sessionId, string $description = '')
-    {
+    public function addDebt(
+        string $userDebtor,
+        string $userCreditor,
+        float $amount,
+        int $sessionId,
+        string $description = ''
+    ) {
         //TODO захардкодим пока payment_id = $sessionId, но потом надо будет доделать.
         $sql = 'INSERT INTO ' . self::DEBT_TABLE . ' (user_debtor, user_creditor, amount, `description`, payment_id) 
         VALUES (:user_debtor, :user_creditor, :amount, :about, :payment_id)';
