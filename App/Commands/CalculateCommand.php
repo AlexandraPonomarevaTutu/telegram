@@ -10,7 +10,7 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class CalculateCommand  extends UserCommand
+class AllDebtsCommand  extends UserCommand
 {
     protected $name = 'calculate';                                 // Your command's name
     protected $description = 'get all debts for session'; // Your command description
@@ -22,18 +22,14 @@ class CalculateCommand  extends UserCommand
         $message = $this->getMessage();            // Get Message object
 
         $chatId = $message->getChat()->getId();   // Get the current Chat ID
-        
-        $text = "Эй, юзеры! \n";
+
         try {
             $sessionId = (new SessionTable())->getLastActiveSessionByChatId($chatId);
         } catch (\Throwable $e) {
             $sessionId = 1; // TODO как надо обработать ошибку?
         }
-        $debtsData = $this->getRowDebts($sessionId);
 
-        foreach ($debtsData as $debt) {
-            $text .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
-        }
+        $text = $this->prepareRawDebtsText($sessionId);
 
         $data = [                                  // Set up the new message data
             'chat_id' => $chatId,                  // Set Chat ID to send the message to
@@ -45,11 +41,19 @@ class CalculateCommand  extends UserCommand
     }
 
     /**
-     *  Простой подсчет - сколько Петя должен Васе без учета того, сколько они оба должны Саше
+     *  Все долги по текущей сессии без аггрегации, но с комментариями
      */
-    private function getRowDebts(int $session)
+    private function prepareRawDebtsText(int $session)
     {
-        return $this->getDebtTable()->getAllActiveDebts($session);
+        $text = "Эй, юзеры! \n";
+        $debtsData = $this->getDebtTable()->getAllDebtsSummed($session);
+        if (empty($debtsData)) {
+            return "{$text} Поздравляю! У вас нет долгов в текущей сессии";
+        }
+        foreach ($debtsData as $debt) {
+            $text .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']}.\n";
+        }
+        return $text;
     }
 
     private function getDebtTable()
