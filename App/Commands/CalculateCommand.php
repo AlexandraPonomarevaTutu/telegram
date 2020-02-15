@@ -10,7 +10,7 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
-class AllDebtsCommand  extends UserCommand
+class CalculateCommand  extends UserCommand
 {
     protected $name = 'calculate';                                 // Your command's name
     protected $description = 'get all debts for session'; // Your command description
@@ -43,7 +43,7 @@ class AllDebtsCommand  extends UserCommand
     /**
      *  Все долги по текущей сессии без аггрегации, но с комментариями
      */
-    private function prepareRawDebtsText(int $session)
+    private function prepareRawDebtsText(int $session): string
     {
         $text = "Эй, юзеры! \n";
         $debtsData = $this->getDebtTable()->getAllDebtsSummed($session);
