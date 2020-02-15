@@ -2,7 +2,8 @@
 
 namespace Longman\TelegramBot\Commands\UserCommands;
 
-use App\Commands\DBConnect;
+use App\Model\DebtTable;
+use App\Model\SessionTable;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Request;
 
@@ -35,7 +36,13 @@ class DebtCommand extends UserCommand
                 . "\n исходное сообщение: $text" // Set message to send
         ];
 
-        (new DBConnect())->addDebt($user, $user2, $sum);
+        try {
+            $sessionId = (new SessionTable())->getLastActiveSessionByChatId($chat_id);
+        } catch (\Throwable $e) {
+            $sessionId = 1; // TODO как надо обработать ошибку?
+        }
+        // TODO получать/создавать payment и передавать payment_id вместо сессии
+        (new DebtTable())->addDebt($user, $user2, $sum, $sessionId);
 
         return Request::sendMessage($data);        // Send message!
     }
