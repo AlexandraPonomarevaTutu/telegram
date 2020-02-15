@@ -10,10 +10,13 @@ use Longman\TelegramBot\Request;
 
 class AllDebtsCommand extends UserCommand
 {
+    // TODO почему-то не работает - разобраться у меня не получилось.
+    //  Но вроде эта команда не очень нужна, т.к. /calculate нормально работает
+    
     protected $name = 'all_debts';                                 // Your command's name
-    protected $description = 'get all debts for session'; // Your command description
+    protected $description = 'get all debts for session';          // Your command description
     protected $usage = '/all_debts';                               // Usage of your command
-    protected $version = '1.0.0';                             // Version of your command
+    protected $version = '1.0.0';                                  // Version of your command
 
     public function execute()
     {
