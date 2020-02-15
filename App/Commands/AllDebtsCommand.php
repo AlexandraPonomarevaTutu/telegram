@@ -49,7 +49,7 @@ class AllDebtsCommand  extends UserCommand
         $debtText = '';
         $debtsData = $this->getDebtTable()->getAllActiveDebts($session);
         foreach ($debtsData as $debt) {
-            if (isset($debt['user_debtor']) && $debt['user_creditor'] && $debt['sum']) {
+            if (isset($debt['user_debtor']) && $debt['user_creditor'] && $debt['amount'] && $debt['description']) {
                 $debtText .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
             }
         }
