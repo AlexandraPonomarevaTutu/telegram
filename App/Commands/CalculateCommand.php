@@ -32,7 +32,7 @@ class CalculateCommand  extends UserCommand
         $debtsData = $this->getRowDebts($sessionId);
 
         foreach ($debtsData as $debt) {
-            $text .= "Ты должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
+            $text .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
         }
 
         $data = [                                  // Set up the new message data
