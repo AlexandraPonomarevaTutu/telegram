@@ -15,7 +15,7 @@ class AllDebtsCommand  extends UserCommand
     protected $name = 'all_debts';                                            // Your command's name
     protected $description = 'get all debts for session without aggregation'; // Your command description
     protected $usage = '/all_debts';                                           // Usage of your command
-    protected $version = '1.0.0';                                             // Version of your command
+    protected $version = '2.0.0';                                             // Version of your command
 
     public function execute()
     {
@@ -28,7 +28,6 @@ class AllDebtsCommand  extends UserCommand
         } catch (\Throwable $e) {
             $sessionId = 1; // TODO как надо обработать ошибку?
         }
-
         $text = $this->prepareRawDebtsText($sessionId);
 
         $data = [                                  // Set up the new message data
