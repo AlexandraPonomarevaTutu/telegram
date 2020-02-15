@@ -12,10 +12,10 @@ use Longman\TelegramBot\Request;
 
 class AllDebtsCommand  extends UserCommand
 {
-    protected $name = 'calculate';                                 // Your command's name
-    protected $description = 'get all debts for session'; // Your command description
-    protected $usage = '/calculate';                               // Usage of your command
-    protected $version = '1.0.0';                             // Version of your command
+    protected $name = 'all_debts';                                            // Your command's name
+    protected $description = 'get all debts for session without aggregation'; // Your command description
+    protected $usage = '/all_debts';                                           // Usage of your command
+    protected $version = '1.0.0';                                             // Version of your command
 
     public function execute()
     {
@@ -46,12 +46,12 @@ class AllDebtsCommand  extends UserCommand
     private function prepareRawDebtsText(int $session)
     {
         $text = "Эй, юзеры! \n";
-        $debtsData = $this->getDebtTable()->getAllDebtsSummed($session);
+        $debtsData = $this->getDebtTable()->getAllActiveDebts($session);
         if (empty($debtsData)) {
             return "{$text} Поздравляю! У вас нет долгов в текущей сессии";
         }
         foreach ($debtsData as $debt) {
-            $text .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']}.\n";
+            $text .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
         }
         return $text;
     }
