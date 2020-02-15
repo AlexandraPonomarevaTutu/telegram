@@ -41,19 +41,22 @@ class CalculateCommand  extends UserCommand
     }
 
     /*
-     *  Все долги по текущей сессии без аггрегации, но с комментариями
+     * Все долги просуммированные по должнику и кредитору. Но пока без аггрегации
      */
     private function prepareRawDebtsText(int $session): string
     {
-        $text = "Эй, юзеры! \n";
+        $hiText = "Эй, юзеры! \n";
+        $debtText = '';
         $debtsData = $this->getDebtTable()->getAllDebtsSummed($session);
-        if (empty($debtsData)) {
-            return "{$text} Поздравляю! У вас нет долгов в текущей сессии";
-        }
         foreach ($debtsData as $debt) {
-            $text .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']}.\n";
+            if (isset($debt['user_debtor']) && $debt['user_creditor'] && $debt['sum']) {
+                $debtText .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['sum']}.\n";
+            }
         }
-        return $text;
+        if (empty($debtText)) {
+            $debtText = "Поздравляю! У вас нет долгов в текущей сессии";
+        }
+        return $hiText . $debtText;
     }
 
     private function getDebtTable()
