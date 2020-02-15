@@ -45,15 +45,18 @@ class AllDebtsCommand  extends UserCommand
      */
     private function prepareRawDebtsText(int $session)
     {
-        $text = "Эй, юзеры! \n";
+        $hiText = "Эй, юзеры! \n";
+        $debtText = '';
         $debtsData = $this->getDebtTable()->getAllActiveDebts($session);
-        if (empty($debtsData)) {
-            return "{$text} Поздравляю! У вас нет долгов в текущей сессии";
-        }
         foreach ($debtsData as $debt) {
-            $text .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
+            if (isset($debt['user_debtor']) && $debt['user_creditor'] && $debt['sum']) {
+                $debtText .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
+            }
         }
-        return $text;
+        if (empty($debtText)) {
+            $debtText =  "Поздравляю! У вас нет долгов в текущей сессии";
+        }
+        return $hiText . $debtText;
     }
 
     private function getDebtTable()
