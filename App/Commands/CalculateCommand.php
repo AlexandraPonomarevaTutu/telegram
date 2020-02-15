@@ -6,8 +6,6 @@ namespace Longman\TelegramBot\Commands\UserCommands;
 use App\Model\DebtTable;
 use App\Model\SessionTable;
 use Longman\TelegramBot\Commands\UserCommand;
-use Longman\TelegramBot\Entities\ServerResponse;
-use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 
 class CalculateCommand  extends UserCommand
@@ -29,7 +27,7 @@ class CalculateCommand  extends UserCommand
             $sessionId = 1; // TODO как надо обработать ошибку?
         }
 
-        $text = $this->prepareRawDebtsText($sessionId);
+        $text = $this->prepareDebtsText($sessionId);
 
         $data = [                                  // Set up the new message data
             'chat_id' => $chatId,                  // Set Chat ID to send the message to
@@ -43,7 +41,7 @@ class CalculateCommand  extends UserCommand
     /*
      * Все долги просуммированные по должнику и кредитору. Но пока без аггрегации
      */
-    private function prepareRawDebtsText(int $session): string
+    private function prepareDebtsText(int $session): string
     {
         $hiText = "Эй, юзеры! \n";
         $debtText = '';
