@@ -20,7 +20,9 @@ class MyDebtCommand extends UserCommand
 
         $chatId = $message->getChat()->getId();   // Get the current Chat ID
 
-        $user = $message->getFrom()->getUsername();
+        // тут костыль - добавляем @ к имени должника, т.к. имя кредитора тоже начинается с @
+        // (нужны одинаковые форматы для имен должника и кредитора, чтобы потом можно было матчить и вычитать долги)
+        $user = "@{$message->getFrom()->getUsername()}";
 
         $debtText = "Эй, {$user}! \n";
         try {
