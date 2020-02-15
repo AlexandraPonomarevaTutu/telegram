@@ -39,7 +39,7 @@ class DebtTable extends AbstractTable
 
         // пока debt.payment_id = $sessionId, а табличка payment не используется, достаточно простого запроса
         $request = 'SELECT d.user_debtor, d.user_creditor, d.amount, d.description FROM ' . self::DEBT_TABLE . ' d
-         WHERE d.payment_id = ? AND d.is_open = true';
+         WHERE d.payment_id = ? AND d.is_open = true ORDER BY d.user_debtor';
 
         $statement = $this->pdo->prepare($request);
         $statement->execute([$sessionId]);
