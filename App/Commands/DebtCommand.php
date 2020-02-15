@@ -65,7 +65,9 @@ class DebtCommand extends UserCommand
             }
         }
 
-        $this->user = $message->getFrom()->getUsername();
+        // тут костыль - добавляем @ к имени должника, т.к. имя кредитора тоже начинается с @
+        // (нужны одинаковы форматы для имен должника и кредитора, чтобы потом можно было матчить и вычитать долги)
+        $this->user = "@{$message->getFrom()->getUsername()}";
         $this->user2 = $user2;
         //TODO:добавить проверку, что юзер есть в чате
 
