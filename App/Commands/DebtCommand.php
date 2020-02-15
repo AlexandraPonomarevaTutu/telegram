@@ -35,9 +35,9 @@ class DebtCommand extends UserCommand
             } catch (\Throwable $e) {
                 $sessionId = 1; // TODO как надо обработать ошибку?
             }
-            // TODO получать/создавать payment и передавать payment_id вместо сессии
             $reply = "{$this->user}! Задолжал {$this->user2} {$this->sum} рублей, за {$this->debtDescription}";
 
+            // TODO получать/создавать payment и передавать payment_id вместо сессии
             (new DebtTable())->addDebt($this->user, $this->user2, $this->sum, $sessionId, $this->debtDescription);
         }
 
