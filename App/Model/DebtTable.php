@@ -43,7 +43,7 @@ class DebtTable extends AbstractTable
 
         $statement = $this->pdo->prepare($request);
         $statement->execute([$sessionId]);
-        return $queryResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getActiveDebtsForUser(string $debtor, int $sessionId)
@@ -55,6 +55,23 @@ class DebtTable extends AbstractTable
 
         $statement = $this->pdo->prepare($request);
         $statement->execute([$debtor, $sessionId]);
-        return $queryResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Вернет список долгов, просуммированных по кредиторам
+     * то есть, если у Саша 2 долга перед Петей на 2 и 3 рубля, а у Пети 3 долга Саше на 1, на 2, и на 4 рубля,
+     * то вернет [
+     * ['user_debtor' => Саша, 'user_creditor' => Петя, 'sum' => 5],
+     * ['user_debtor' => Петя, 'user_creditor' => Саша, 'sum' => 7]
+     * ]
+     */
+    public function getAllDebtsSummed($sessionId)
+    {
+        $req = 'SELECT user_debtor, user_creditor, SUM (amount) AS sum FROM debt 
+WHERE payment_id = ? GROUP BY user_creditor,user_debtor';
+        $statement = $this->pdo->prepare($req);
+        $statement->execute([$sessionId]);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
