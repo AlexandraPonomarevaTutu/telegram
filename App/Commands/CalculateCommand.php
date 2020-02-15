@@ -40,7 +40,7 @@ class CalculateCommand  extends UserCommand
         return Request::sendMessage($data);        // Send message!
     }
 
-    /**
+    /*
      *  Все долги по текущей сессии без аггрегации, но с комментариями
      */
     private function prepareRawDebtsText(int $session): string
