@@ -38,7 +38,7 @@ class DebtCommand extends UserCommand
             // TODO получать/создавать payment и передавать payment_id вместо сессии
             $reply = "{$this->user}! Задолжал {$this->user2} {$this->sum} рублей, за {$this->debtDescription}";
 
-            (new DebtTable())->addDebt($this->user, $this->user2, $this->sum, $sessionId);
+            (new DebtTable())->addDebt($this->user, $this->user2, $this->sum, $sessionId, $this->debtDescription);
         }
 
         $data = [                                  // Set up the new message data
@@ -66,7 +66,7 @@ class DebtCommand extends UserCommand
         }
 
         $this->user = $message->getFrom()->getUsername();
-        $this->debtTo = $user2;
+        $this->user2 = $user2;
         //TODO:добавить проверку, что юзер есть в чате
 
         $this->debtDescription = substr($text, $offset + $length);
