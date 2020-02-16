@@ -60,7 +60,7 @@ class DebtTable extends AbstractTable
 
     /**
      * Вернет список долгов, просуммированных по кредиторам
-     * то есть, если у Саша 2 долга перед Петей на 2 и 3 рубля, а у Пети 3 долга Саше на 1, на 2, и на 4 рубля,
+     * то есть, если у Саши 2 долга перед Петей на 2 и 3 рубля, а у Пети 3 долга Саше на 1, на 2, и на 4 рубля,
      * то вернет [
      * ['user_debtor' => Саша, 'user_creditor' => Петя, 'sum' => 5],
      * ['user_debtor' => Петя, 'user_creditor' => Саша, 'sum' => 7]
@@ -74,14 +74,21 @@ class DebtTable extends AbstractTable
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // вот такой страшный джойн вернет правильную сумму для тех, у кого есть взаимные долги
-    // но оставит пустые ячейки для тех, кто должен только в 1 сторону
-    // select t1.user_debtor, t1.user_creditor, (t1.sum - t2.sum)
-    // from (select user_debtor, user_creditor, SUM (amount) as sum from debt WHERE payment_id = 1 GROUP BY user_creditor,user_debtor)
-    // t1 LEFT OUTER JOIN
-    // (select user_debtor, user_creditor, SUM (amount) as sum from debt WHERE payment_id = 1 GROUP BY user_creditor,user_debtor)
-    // t2 on t1.user_debtor = t2.user_creditor and t1.user_creditor=t2.user_debtor
-
+    /**
+     * Вернет список долгов просто просуммированный по кредиторам,
+     * и просуммированный с вычетом долга кредитора этому должнику
+     *
+     * Пример: если у Саши 2 долга перед Петей на 2 и 3 рубля, а у Пети 3 долга Саше на 1, на 2, и на 4 рубля,
+     * а у Игоря 1 долг Саше на 2 рубля,
+     * то вернет [
+     * ['user_debtor' => Саша, 'user_creditor' => Петя, 'sum' => 5, 'aggregated' => -2],
+     * ['user_debtor' => Петя, 'user_creditor' => Саша, 'sum' => 7, 'aggregated' => 2],
+     * ['user_debtor' => Игорь, 'user_creditor' => Саша, 'sum' => 2, 'aggregated' => null]
+     * ]
+     *
+     * (поле 'sum' пришлось оставить, т.к. у меня не получилось в sql запросе сделать так,
+     * чтобы aggregated было правильным, когда у кредитора нет обратного долга должнику)
+     */
     public function getAggregatedDebts($sessionId)
     {
         $req = 'SELECT t1.user_debtor, t1.user_creditor, t1.sum AS sum, (t1.sum - t2.sum) AS aggregated 
@@ -89,7 +96,6 @@ FROM (' . $this->getSummedDebtsQuery() . ') t1 LEFT OUTER JOIN (' . $this->getSu
 ON t1.user_debtor = t2.user_creditor AND t1.user_creditor=t2.user_debtor';
         $statement = $this->pdo->prepare($req);
         $statement->execute([$sessionId, $sessionId]);
-        var_dump($statement->queryString);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 

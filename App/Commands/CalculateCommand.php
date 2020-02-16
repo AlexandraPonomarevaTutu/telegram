@@ -66,7 +66,6 @@ class CalculateCommand  extends UserCommand
         $hiText = "Эй, юзеры! \n";
         $debtText = '';
         $debtsData = (new DebtTable())->getAggregatedDebts($session);
-        var_dump($debtsData);
         foreach ($debtsData as $debt) {
             if (isset($debt['aggregated'])) {
                 if ($debt['aggregated'] > 0) {
