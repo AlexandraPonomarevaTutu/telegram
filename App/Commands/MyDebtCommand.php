@@ -7,11 +7,11 @@ use App\Model\SessionTable;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Request;
 
-class MydebtCommand extends UserCommand
+class MyDebtCommand extends UserCommand
 {
     protected $name = 'my_debt';                                 // Your command's name
     protected $description = 'get all debts for asking user'; // Your command description
-    protected $usage = '/mydebt';                               // Usage of your command
+    protected $usage = '/my_debt';                               // Usage of your command
     protected $version = '1.0.0';                             // Version of your command
 
     public function execute()
