@@ -11,7 +11,7 @@ use Longman\TelegramBot\Request;
 class CalculateCommand  extends UserCommand
 {
     protected $name = 'calculate';                                 // Your command's name
-    protected $description = 'get all debts for session'; // Your command description
+    protected $description = 'calculate all debts for session'; // Your command description
     protected $usage = '/calculate';                               // Usage of your command
     protected $version = '1.0.0';                             // Version of your command
 
