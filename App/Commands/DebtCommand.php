@@ -70,7 +70,7 @@ class DebtCommand extends UserCommand
         //TODO:добавить проверку, что юзер есть в чате
 
         $this->debtDescription = substr($text, $offset + $length);
-        preg_match_all('/\d+/', $text, $matches);
+        preg_match_all('/\s\d+\s/ ', $text, $matches);
         $this->sum = $sum = $matches[0][0];
     }
 
