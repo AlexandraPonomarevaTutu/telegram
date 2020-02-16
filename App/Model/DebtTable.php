@@ -68,10 +68,34 @@ class DebtTable extends AbstractTable
      */
     public function getAllDebtsSummed($sessionId)
     {
-        $req = 'SELECT user_debtor, user_creditor, SUM (amount) AS sum FROM debt 
-WHERE payment_id = ? GROUP BY user_creditor,user_debtor';
+        $req = $this->getSummedDebtsQuery();
         $statement = $this->pdo->prepare($req);
         $statement->execute([$sessionId]);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // вот такой страшный джойн вернет правильную сумму для тех, у кого есть взаимные долги
+    // но оставит пустые ячейки для тех, кто должен только в 1 сторону
+    // select t1.user_debtor, t1.user_creditor, (t1.sum - t2.sum)
+    // from (select user_debtor, user_creditor, SUM (amount) as sum from debt WHERE payment_id = 1 GROUP BY user_creditor,user_debtor)
+    // t1 LEFT OUTER JOIN
+    // (select user_debtor, user_creditor, SUM (amount) as sum from debt WHERE payment_id = 1 GROUP BY user_creditor,user_debtor)
+    // t2 on t1.user_debtor = t2.user_creditor and t1.user_creditor=t2.user_debtor
+
+    public function getAggregatedDebts($sessionId)
+    {
+        $req = 'SELECT t1.user_debtor, t1.user_creditor, t1.sum AS sum, (t1.sum - t2.sum) AS aggregated 
+FROM (' . $this->getSummedDebtsQuery() . ') t1 LEFT OUTER JOIN (' . $this->getSummedDebtsQuery() . ') t2 
+ON t1.user_debtor = t2.user_creditor AND t1.user_creditor=t2.user_debtor';
+        $statement = $this->pdo->prepare($req);
+        $statement->execute([$sessionId, $sessionId]);
+        var_dump($statement->queryString);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function getSummedDebtsQuery()
+    {
+        return 'SELECT user_debtor, user_creditor, SUM (amount) AS sum FROM debt 
+WHERE payment_id = ? GROUP BY user_creditor,user_debtor';
     }
 }

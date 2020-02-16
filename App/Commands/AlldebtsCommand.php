@@ -12,6 +12,7 @@ class AlldebtsCommand extends UserCommand
 {
     // TODO почему-то не работает - разобраться у меня не получилось.
     //  Но вроде эта команда не очень нужна, т.к. /calculate нормально работает
+    //  Скорей всего, сам бот не узнает эту команду. Запрос в базу я проверила, он работает правильно
     
     protected $name = 'all_debts';                                 // Your command's name
     protected $description = 'get all debts for session';          // Your command description
