@@ -18,9 +18,13 @@ class SessionTable extends AbstractTable
         $statement->execute([$chatId]);
         $queryResult = $statement->fetchAll(PDO::FETCH_ASSOC);
         if (!isset($queryResult[0]['id'])) {
-            // TODO сделать нормальную обработку, когда запилим создание сессии
-            //   или может, тут создавать новую сессию?
-            return 1;
+            $sql = 'INSERT INTO ' . self::SESSION_TABLE . ' (chat_id, is_active) VALUES (:chat_id, :is_active)';
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                'chat_id' => $chatId,
+                'is_active' => TRUE,
+            ]);
+            $queryResult = $statement->fetchAll(PDO::FETCH_ASSOC);
         }
         return $queryResult[0]['id'];
     }
