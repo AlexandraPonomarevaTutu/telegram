@@ -12,6 +12,7 @@ class AllDebtsCommand extends UserCommand
 {
     // TODO почему-то не работает - разобраться у меня не получилось.
     //  Но вроде эта команда не очень нужна, т.к. /calculate нормально работает
+    //  Скорей всего, сам бот не узнает эту команду. Запрос в базу я проверила, он работает правильно
     
     protected $name = 'all_debts';                                 // Your command's name
     protected $description = 'get all debts for session';          // Your command description
@@ -50,7 +51,8 @@ class AllDebtsCommand extends UserCommand
         $debtText = '';
         $debtsData = $this->getDebtTable()->getAllActiveDebts($session);
         foreach ($debtsData as $debt) {
-            if (isset($debt['user_debtor']) && $debt['user_creditor'] && $debt['amount'] && $debt['description']) {
+            if (isset($debt['user_debtor']) && isset($debt['user_creditor'])
+                && isset($debt['amount']) && isset($debt['description'])) {
                 $debtText .= "{$debt['user_debtor']} должен {$debt['user_creditor']} {$debt['amount']} за \"{$debt['description']}\".\n";
             }
         }
